@@ -370,7 +370,7 @@
     //  Any sharing format works: /edit, /view, or /pub links all accepted.
     //  The document must be set to "Anyone with the link can view".
     // =====================================================================
-    const GOOGLE_DOC_URL = 'https://docs.google.com/document/d/YOUR_DOC_ID_HERE/edit';
+    const GOOGLE_DOC_URL = 'https://docs.google.com/document/d/1fa2LWPzlc7FPEYyGEhSqt7iz77MTq-gKktny7S4DkhI/edit';
     // =====================================================================
 
 
@@ -447,7 +447,7 @@
       }
 
       // Use the HTML export endpoint (requires "Anyone can view" sharing)
-      const exportUrl  = `https://docs.google.com/document/d/${1fa2LWPzlc7FPEYyGEhSqt7iz77MTq-gKktny7S4DkhI}/export?format=html`;
+      const exportUrl  = `https://docs.google.com/document/d/${docId}/export?format=html`;
       // Route through a CORS proxy so the browser can fetch cross-origin
       const proxyUrl   = `https://api.allorigins.win/get?url=${encodeURIComponent(exportUrl)}`;
 
