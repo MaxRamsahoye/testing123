@@ -120,7 +120,7 @@
     pointer-events: none;
   }
   .loading-gif {
-    width: 360px; /* Increased by 3x from 120px */
+    width: 360px; 
     height: auto;
     mix-blend-mode: multiply;
   }
@@ -200,7 +200,7 @@
     transition: color 0.4s ease;
   }
   .theme-toggle:hover { color: var(--accent-color); }
-  .theme-toggle svg { width: 20px; height: 20px; transition: transform 0.3s ease; }
+  .theme-toggle svg { width: 20px; height: 20px; transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease; }
   .moon-icon { display: none; }
   html.dark-theme .sun-icon { display: none; }
   html.dark-theme .moon-icon { display: block; }
@@ -589,7 +589,7 @@
     font-weight: 600;
     color: var(--text-primary);
   }
-  #abstract h2 {
+  #abstract h2, #mobile-contents h2 {
     font-size: 1.1rem;
   }
   .content p {
@@ -620,6 +620,21 @@
     left: 0;
     top: 8px; 
   }
+
+  /* Mobile Contents specific styles */
+  .mobile-only {
+    display: none;
+  }
+  .mobile-toc-list a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.4s ease, font-weight 0.2s ease;
+  }
+  .mobile-toc-list a:hover, .mobile-toc-list a.active {
+    color: var(--accent-color);
+    font-weight: 600;
+  }
+
   .indented-quote {
     margin: 1.5rem 0 1.5rem 2rem;
     font-size: 1.15rem;
@@ -651,7 +666,7 @@
     z-index: 150;
     opacity: 0;
     pointer-events: none;
-    transition: color 0.4s ease, opacity 0.4s ease, transform 0.2s ease;
+    transition: color 0.4s ease, opacity 0.4s ease, transform 0.2s ease, width 0.3s ease, height 0.3s ease;
   }
   .scroll-to-top.visible {
     opacity: 1;
@@ -664,6 +679,7 @@
   .scroll-to-top svg {
     width: 24px; 
     height: 24px;
+    transition: width 0.3s ease, height 0.3s ease;
   }
   .dot-accent {
     color: var(--accent-color);
@@ -935,7 +951,35 @@
       max-width: 100%;
     }
     
-    /* Hide top left grey polygon, bottom left elements, and the contents */
+    /* Make the mobile contents block visible */
+    .mobile-only {
+      display: block;
+    }
+    
+    /* Scale down light/dark toggle */
+    .theme-toggle svg {
+      width: 16px; 
+      height: 16px;
+    }
+
+    /* Scale down up arrow container and icon */
+    .scroll-to-top {
+      width: 36px;
+      height: 36px;
+      bottom: 1.5rem;
+      right: 1.5rem;
+    }
+    .scroll-to-top svg {
+      width: 18px; 
+      height: 18px;
+    }
+    
+    /* Scale down loading GIF */
+    .loading-gif {
+      width: 200px;
+    }
+
+    /* Hide top left grey polygon, bottom left elements, and the desktop sidebar contents */
     header::before,
     .corner-left,
     .corner-bottom,
@@ -1098,6 +1142,21 @@
         </ul>
         
         <p>Based on this typology, we propose (1) high-level principles for the (AI) governance of <em>cultural evolution</em> (2) delineate <em>civilisation design</em> criteria for a <em>viable world-system</em> and (3) endorse a candidate project for a meta-utopian political institution<span class="dot-accent">:</span> <em>The Internet Government</em>, a virtual form of <em>moral parliament</em> with AI cultural representatives.</p>
+      </section>
+
+      <section id="mobile-contents" class="mobile-only">
+        <h2>Contents</h2>
+        <ul class="mobile-toc-list abstract-list">
+          <li><a href="#intro" data-target="intro">0<span class="dot-accent">.</span> The Utopian Turn</a></li>
+          <li><a href="#mechanics" data-target="mechanics">1<span class="dot-accent">.</span> The Mechanics of Meta-Utopia</a></li>
+          <li><a href="#clash" data-target="clash">2<span class="dot-accent">.</span> The Clash of Civilisations</a></li>
+          <li><a href="#takeover" data-target="takeover">3<span class="dot-accent">.</span> Mono-Cultural Takeover</a></li>
+          <li><a href="#enclosure" data-target="enclosure">4<span class="dot-accent">.</span> Meta-Dystopian Enclosure</a></li>
+          <li><a href="#collapse" data-target="collapse">5<span class="dot-accent">.</span> Cultural Collapse</a></li>
+          <li><a href="#uplift" data-target="uplift">6<span class="dot-accent">.</span> Meta-Utopian Uplift</a></li>
+          <li><a href="#principles" data-target="principles">7<span class="dot-accent">.</span> Macrostrategic Frames</a></li>
+          <li><a href="#criteria" data-target="criteria">8<span class="dot-accent">.</span> Civilisation Design Criteria</a></li>
+        </ul>
       </section>
       
       <hr class="section-divider">
@@ -1437,13 +1496,6 @@
     } else {
       scrollTopBtn.classList.remove('visible');
     }
-    
-    const sidebarMiniTitle = document.getElementById('sidebarMiniTitle');
-    if (scrollTop > titleBottom) {
-      if (sidebarMiniTitle) sidebarMiniTitle.classList.add('visible');
-    } else {
-      if (sidebarMiniTitle) sidebarMiniTitle.classList.remove('visible');
-    }
   });
 
   // Scroll to Top action
@@ -1451,9 +1503,9 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  // Intersection Observer for Active Sidebar Links
+  // Intersection Observer for Active Sidebar Links & Mobile Contents Links
   const sections = document.querySelectorAll('.scroll-section');
-  const navLinks = document.querySelectorAll('#toc-list a');
+  const navLinks = document.querySelectorAll('#toc-list a, .mobile-toc-list a');
   
   // Custom JS fading transition for section jumping to prevent scroll lurching
   navLinks.forEach(link => {
@@ -1499,9 +1551,11 @@
       if (entry.isIntersecting) {
         navLinks.forEach(link => link.classList.remove('active'));
         const currentId = entry.target.getAttribute('id');
-        const activeLink = document.querySelector(`#toc-list a[data-target="${currentId}"]`);
-        if (activeLink) {
-          activeLink.classList.add('active');
+        
+        // Select both the desktop and mobile links
+        const activeLinks = document.querySelectorAll(`a[data-target="${currentId}"]`);
+        if (activeLinks) {
+          activeLinks.forEach(link => link.classList.add('active'));
         }
       }
     });
