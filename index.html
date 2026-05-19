@@ -935,67 +935,17 @@
       max-width: 100%;
     }
     
-    /* Mobile Sidebar Override - Sticky Top Drawer */
+    /* Hide top left grey polygon, bottom left elements, and the contents */
+    header::before,
+    .corner-left,
+    .corner-bottom,
     .locked-sidebar {
-      position: sticky !important;
-      top: 0 !important;
-      transform: none !important;
-      width: 100% !important;
-      min-width: 100% !important;
-      max-width: 100% !important;
-      height: auto;
-      background-color: var(--bg-color);
-      z-index: 110;
-      border-right: none;
-      border-bottom: 1px solid var(--border-color);
-      padding: 1rem 5vw !important;
-      margin-right: 0 !important;
-      flex-direction: column;
-    }
-
-    .locked-sidebar.collapsed {
-      padding-bottom: 1rem !important;
-      border-bottom-color: transparent;
-    }
-
-    .locked-sidebar.collapsed .sidebar-inner {
-      max-height: 0;
-      margin: 0;
-      opacity: 0;
-      visibility: hidden;
+      display: none !important;
     }
     
-    .sidebar-inner {
-      max-height: 50vh;
-      opacity: 1;
-      visibility: visible;
-      transition: max-height 0.4s ease, opacity 0.4s ease;
-    }
-
-    .sidebar-header {
-      margin-bottom: 1rem;
-    }
-
-    .locked-sidebar.collapsed .sidebar-header {
-      opacity: 1;
-      visibility: visible;
-      margin-bottom: 0;
-    }
-
-    /* Transform toggle to point down (expand) and up (collapse) */
-    .sidebar-toggle {
-      right: 5vw;
-      top: 1.5rem;
-      transform: translateY(-50%) rotate(90deg); 
-    }
-
-    .locked-sidebar.collapsed .sidebar-toggle {
-      right: 5vw;
-      transform: translateY(-50%) rotate(-90deg); 
-    }
-
-    .sidebar-mini-title {
-      display: none !important;
+    /* Make progress bar thinner */
+    .scroll-progress {
+      width: 6px !important;
     }
 
     /* Title Box Mobile Adjustments */
@@ -1007,16 +957,8 @@
       font-size: 2.8rem;
     }
     
-    /* Decorative Element Scaling */
-    .corner-bottom {
-      width: 100vw;
-    }
     header {
       padding: 1rem 5vw;
-    }
-    header::before {
-      width: 75vw;
-      height: 120px;
     }
   }
 
@@ -1478,20 +1420,6 @@
     document.documentElement.classList.toggle('dark-theme');
   });
 
-  // Sidebar Toggle Logic
-  const sidebar = document.getElementById('research-sidebar');
-  
-  // Auto-collapse sidebar on mobile load so it doesn't block reading
-  if (window.innerWidth <= 1024) {
-    sidebar.classList.add('collapsed');
-    document.body.classList.add('sidebar-collapsed');
-  }
-  
-  document.getElementById('toggle-btn').addEventListener('click', function() {
-    sidebar.classList.toggle('collapsed');
-    document.body.classList.toggle('sidebar-collapsed');
-  });
-
   window.addEventListener('scroll', function() {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     
@@ -1532,12 +1460,6 @@
     link.addEventListener('click', function(e) {
       e.preventDefault();
       
-      // Auto-close sidebar on mobile after clicking a link
-      if (window.innerWidth <= 1024) {
-        sidebar.classList.add('collapsed');
-        document.body.classList.add('sidebar-collapsed');
-      }
-
       const targetId = this.getAttribute('data-target');
       const targetElement = document.getElementById(targetId);
       
@@ -1588,30 +1510,6 @@
   sections.forEach(section => {
     sectionObserver.observe(section);
   });
-
-  // Intersection Observer to Auto-Close Sidebar when Matrix is in View
-  const matrixEl = document.getElementById('matrix-wrapper');
-  const matrixObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      // Avoid auto-toggling logic colliding on mobile widths
-      if (window.innerWidth > 1024) {
-        if (entry.isIntersecting) {
-          sidebar.classList.add('collapsed');
-          document.body.classList.add('sidebar-collapsed');
-        } else {
-          sidebar.classList.remove('collapsed');
-          document.body.classList.remove('sidebar-collapsed');
-        }
-      }
-    });
-  }, {
-    root: null,
-    threshold: 0.2 // Triggers when 20% of the table is visible
-  });
-
-  if (matrixEl) {
-    matrixObserver.observe(matrixEl);
-  }
 </script>
 </body>
 </html>
