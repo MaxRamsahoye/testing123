@@ -78,8 +78,6 @@
     margin: 0;
     font-family: var(--font-serif);
     background-color: var(--bg-color); 
-    background-image: linear-gradient(to bottom, var(--top-gradient), var(--bg-color) 350px);
-    background-repeat: no-repeat;
     min-height: 100vh;
     color: var(--text-primary);
     line-height: 1.4;
@@ -91,6 +89,14 @@
     overflow: hidden;
   }
   
+  /* Added filter transition to smooth out image inverts */
+  .logo-image,
+  .footer-logo,
+  .sidebar-gif,
+  .loading-gif {
+    transition: filter 0.4s ease;
+  }
+
   /* Image invert for dark theme with screen blend mode to strip the bounding box */
   html.dark-theme .logo-image,
   html.dark-theme .footer-logo,
@@ -186,7 +192,7 @@
     clip-path: polygon(0 0, 100% 0, 0 100%, 0 100%);
     z-index: 0;
     pointer-events: none;
-    transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: background-color 0.4s ease; /* Synced up with standard transition speed */
   }
   
   .theme-toggle {
@@ -472,6 +478,8 @@
     align-items: center;
     margin-left: 0.5rem;
     cursor: help !important;
+    /* Prevent highlight on mobile tap */
+    -webkit-tap-highlight-color: transparent;
   }
   .info-icon {
     display: inline-flex;
@@ -487,10 +495,14 @@
     color: var(--text-secondary);
     transition: color 0.4s ease, border-color 0.4s ease;
   }
-  .info-wrapper:hover .info-icon {
+  
+  /* Updated to support both hover and JS toggle (.active) for mobile */
+  .info-wrapper:hover .info-icon,
+  .info-wrapper.active .info-icon {
     color: var(--accent-color);
     border-color: var(--accent-color);
   }
+  
   .hoverbox {
     position: absolute;
     bottom: 100%;
@@ -515,7 +527,10 @@
     text-transform: none;
     letter-spacing: normal;
   }
-  .info-wrapper:hover .hoverbox {
+  
+  /* Updated to support both hover and JS toggle (.active) for mobile */
+  .info-wrapper:hover .hoverbox,
+  .info-wrapper.active .hoverbox {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
@@ -1477,6 +1492,24 @@
   const themeToggle = document.getElementById('themeToggle');
   themeToggle.addEventListener('click', () => {
     document.documentElement.classList.toggle('dark-theme');
+  });
+
+  // Make Info Icon functional on touch devices
+  const infoWrappers = document.querySelectorAll('.info-wrapper');
+  infoWrappers.forEach(wrapper => {
+    wrapper.addEventListener('click', function(e) {
+      e.stopPropagation(); // prevent document click from firing immediately
+      this.classList.toggle('active');
+    });
+  });
+
+  // Close info boxes when clicking elsewhere
+  document.addEventListener('click', function(e) {
+    infoWrappers.forEach(wrapper => {
+      if (!wrapper.contains(e.target)) {
+        wrapper.classList.remove('active');
+      }
+    });
   });
 
   window.addEventListener('scroll', function() {
